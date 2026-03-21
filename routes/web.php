@@ -6,8 +6,16 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\Timeslot;
 use App\Models\Employee;
-// use App\Models\EmployeeTimeslot;
+use App\Models\EmployeeTimeslot;
+use App\Models\Booking;
 
+
+
+
+
+// ──────────────────────────────────────────────────────────────
+//                      GET methods
+// ──────────────────────────────────────────────────────────────
 
 Route::get('/', function () {
     return view('home');
@@ -21,12 +29,20 @@ Route::get('/admin', function () {
 });
 
 Route::get('/user', function () {
-    return view('user');
+    return view('user', [
+        'timeslots' => Timeslot::all()
+    ]);
 });
 
 
-Route::post('/admin/timeslot', function (Request $request) {
 
+// ──────────────────────────────────────────────────────────────
+//                      Timeslot Routes
+// ──────────────────────────────────────────────────────────────
+
+Route::post('/admin/timeslot', function (Request $request) {
+    
+    // Create timeslot
     Timeslot::create([
         'start_time' => $request->start_time,
         'end_time' => $request->end_time,
@@ -35,7 +51,14 @@ Route::post('/admin/timeslot', function (Request $request) {
     return back(); // reloads the page
 });
 
+
+// ──────────────────────────────────────────────────────────────
+//                      Employee Routes
+// ──────────────────────────────────────────────────────────────
+
 Route::post('/admin/employee', function (Request $request) {
+    
+    // Create employee
     Employee::create([
         'full_name' => $request->full_name,
         'position' => $request->position,
@@ -45,9 +68,13 @@ Route::post('/admin/employee', function (Request $request) {
 });
 
 
-use App\Models\EmployeeTimeslot;
+// ──────────────────────────────────────────────────────────────
+//                    Employee Timeslot Rutes
+// ──────────────────────────────────────────────────────────────
+
 Route::post('/admin/assign', function (Request $request) {
-    // dd($request->all());
+
+    // Create employee timeslot
     EmployeeTimeslot::create([
         'timeslot_id' => $request->timeslot_id,
         'employee_id' => $request->employee_id,
@@ -56,4 +83,41 @@ Route::post('/admin/assign', function (Request $request) {
     ]);
 
     return back();
+});
+
+
+// ──────────────────────────────────────────────────────────────
+//                      Booking Routes
+// ──────────────────────────────────────────────────────────────
+
+Route::post('/user/book', function (Request $request) {
+
+    // Validate input
+    $request->validate([
+        'user_email' => 'required|email',
+        'timeslot_id' => 'required'
+    ]);
+
+    // Get next available employee in queue
+    $employeeSlot = EmployeeTimeslot::where('timeslot_id', $request->timeslot_id)
+        ->where('is_assigned', false)
+        ->orderBy('queue_position')
+        ->first();
+
+    if (!$employeeSlot) {
+        return back()->with('error', 'No employees available for this timeslot');
+    }
+
+    // Mark employee as assigned
+    $employeeSlot->update([
+        'is_assigned' => true
+    ]);
+
+    // Create booking
+    Booking::create([
+        'user_email' => $request->user_email,
+        'employee_timeslot_id' => $employeeSlot->id
+    ]);
+
+    return back()->with('success', 'Booking confirmed!');
 });
