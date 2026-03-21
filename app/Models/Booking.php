@@ -13,4 +13,9 @@ class Booking extends Model
         'user_email',
         'employee_timeslot_id'
     ];
+
+    public function employeeTimeslot() {
+        return $this->belongsTo(EmployeeTimeslot::class);
+    }
+
 }
