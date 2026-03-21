@@ -20,7 +20,7 @@ return new class extends Migration
 
             // Stores role/position of the employee
             // e.g. (Technician, Agent)
-            $table->string('role');
+            $table->string('position');
             
             $table->timestamps(); // Adds created_at and updated_at timestamp columns
         });
