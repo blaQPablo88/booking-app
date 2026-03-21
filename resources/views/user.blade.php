@@ -6,7 +6,14 @@
 </head>
 <body>
 
-    <h1>User Booking System</h1>
+    
+    <div class="container mt-3">
+        <h1>User Booking System</h1>
+        <a href="/">
+            Go back home
+        </a>
+    </div>
+    <br>
 
     <!-- MESSAGES -->
     @if(session('success'))
