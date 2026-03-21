@@ -11,9 +11,9 @@ Route::get('/', function () {
 });
 
 Route::get('/admin', function () {
-    return view('Admin page coming soon');
+    return view('admin');
 });
 
 Route::get('/user', function () {
-    return view('welcome');
+    return view('user');
 });
