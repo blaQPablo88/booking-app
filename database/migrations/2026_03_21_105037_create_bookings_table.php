@@ -12,8 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bookings', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id(); // Primary key
+            
+            // Email address of the person making a booking
+            // Identitifies the user without a full user model
+            $table->string('user_email');
+
+            // Foreign key referencing the 'employee_timeslots' table
+            // Ensures each booking is tied to a specific employee timeslot
+            $table->foreignId('employee_timeslot_id')->constrained('employee_timeslots')->cascadeOnDelete();
+
+            $table->timestamps(); // Adds created_at and updated_at timestamp columns
         });
     }
 

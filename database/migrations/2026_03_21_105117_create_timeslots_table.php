@@ -12,8 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('timeslots', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            
+            $table->id(); // Primary key
+
+            // Starting time of the timeslot e.g. (09:30)
+            // Defines when the booking begins
+            $table->time('start_time');
+            
+            // The ending time of the timeslot e.g. (09:30)
+            // Defines when the booking ends
+            $table->time('end_time');
+            
+            $table->timestamps(); // Adds created_at and updated_at timestamp columns
         });
     }
 
