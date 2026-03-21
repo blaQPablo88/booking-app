@@ -16,8 +16,9 @@ class Timeslot extends Model
     ];
 
     // Relationship: one timeslot has many queue entries
-    public function employeeTimeslots()
-    {
+    public function employeeTimeslots() {
         return $this->hasMany(EmployeeTimeslot::class);
     }
+
+
 }

@@ -30,7 +30,9 @@ Route::get('/admin', function () {
 
 Route::get('/user', function () {
     return view('user', [
-        'timeslots' => Timeslot::all()
+        'employeeTimeslots' => EmployeeTimeslot::with(['employee', 'timeslot'])->get(),
+        'bookings' => Booking::all(), 
+        'positions' => Employee::select('position')->distinct()->pluck('position')
     ]);
 });
 

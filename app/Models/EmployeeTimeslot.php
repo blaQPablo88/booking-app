@@ -15,5 +15,12 @@ class EmployeeTimeslot extends Model
         'queue_position',
         'is_assigned'
     ];
+
+    public function timeslot() {
+        return $this->belongsTo(Timeslot::class);
+    }
+    public function employee() {
+        return $this->belongsTo(Employee::class);
+    }
 }
 
