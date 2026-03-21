@@ -19,22 +19,70 @@
     <hr>
 
     <!-- BOOKED SCHEDULES -->
-    <h2>Your Bookings</h2>
+    <div class="container mt-4">
 
-    @if($bookings->isEmpty())
-        <p>No bookings yet.</p>
-    @else
-        @foreach($bookings as $booking)
-            <div style="margin-bottom: 10px;">
-                📧 {{ $booking->user_email }} —
-                🕒 {{ $booking->employeeTimeslot->timeslot->start_time }}
-                -
-                {{ $booking->employeeTimeslot->timeslot->end_time }}
-                {{ $booking->employeeTimeslot->employee->position }}
+        <h2 class="mb-3">Your Bookings</h2>
+
+        @if($bookings->isEmpty())
+            <div class="alert alert-info">
+                No bookings yet.
             </div>
-        @endforeach
-    @endif
+        @else
+
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered align-middle">
+
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Email</th>
+                            <th>Time</th>
+                            <th>Employee</th>
+                            <th>Seeking a:</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach($bookings as $booking)
+                            <tr>
+                                <td>
+                                    {{ $booking->user_email }}
+                                </td>
+
+                                <td>
+                                    {{ $booking->employeeTimeslot->timeslot->start_time }}
+                                    -
+                                    {{ $booking->employeeTimeslot->timeslot->end_time }}
+                                </td>
+
+                                <td>
+                                    {{ $booking->employeeTimeslot->employee->full_name }}
+                                </td>
+
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        {{ $booking->employeeTimeslot->employee->position }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <form method="POST" action="/user/booking/{{ $booking->id }}/delete">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button class="btn btn-danger btn-sm">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+    </div>
     <hr>
+
 
     <!-- AVAILABLE SLOTS -->
     <div class="container mt-5">
@@ -80,12 +128,15 @@
                                 required
                             >
 
-                            <!-- 🔥 IMPORTANT CHANGE -->
                             <input type="hidden" name="employee_timeslot_id" value="{{ $ets->id }}">
 
-                            <button class="btn btn-primary w-100">
-                                Book
+                            <button 
+                                class="btn w-100 {{ $ets->is_assigned ? 'btn-secondary' : 'btn-primary' }}"
+                                {{ $ets->is_assigned ? 'disabled' : '' }}
+                            >
+                                {{ $ets->is_assigned ? 'Booked' : 'Book' }}
                             </button>
+
                         </form>
 
                     </div>

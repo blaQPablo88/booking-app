@@ -11,16 +11,16 @@ use App\Models\Booking;
 
 
 
-
-
 // ──────────────────────────────────────────────────────────────
 //                      GET methods
 // ──────────────────────────────────────────────────────────────
 
+// home-page
 Route::get('/', function () {
     return view('home');
 });
-
+    
+// admin-page
 Route::get('/admin', function () {
     return view('admin', [
         'timeslots' => Timeslot::all(),
@@ -28,12 +28,49 @@ Route::get('/admin', function () {
     ]);
 });
 
+// user-page
 Route::get('/user', function () {
+
+    $bookings = Booking::with([
+        'employeeTimeslot.employee',
+        'employeeTimeslot.timeslot'
+    ])->get();
+
+    $employeeTimeslots = EmployeeTimeslot::with([
+        'employee',
+        'timeslot'
+    ])->get();
+
+    $positions = Employee::select('position')
+        ->distinct()
+        ->pluck('position');
+
     return view('user', [
-        'employeeTimeslots' => EmployeeTimeslot::with(['employee', 'timeslot'])->get(),
-        'bookings' => Booking::all(), 
-        'positions' => Employee::select('position')->distinct()->pluck('position')
+        'bookings' => $bookings,
+        'employeeTimeslots' => $employeeTimeslots,
+        'positions' => $positions
     ]);
+});
+
+
+
+// ──────────────────────────────────────────────────────────────
+//                      DELETE methods
+// ──────────────────────────────────────────────────────────────
+
+Route::delete('/user/booking/{id}/delete', function ($id) {
+
+    $booking = Booking::findOrFail($id);
+
+    // free up the slot again
+    $booking->employeeTimeslot->update([
+        'is_assigned' => false
+    ]);
+
+    // delete booking
+    $booking->delete();
+
+    return back()->with('success', 'Booking cancelled successfully');
 });
 
 
@@ -97,20 +134,18 @@ Route::post('/user/book', function (Request $request) {
     // Validate input
     $request->validate([
         'user_email' => 'required|email',
-        'timeslot_id' => 'required'
+        'employee_timeslot_id' => 'required|exists:employee_timeslots,id'
     ]);
 
-    // Get next available employee in queue
-    $employeeSlot = EmployeeTimeslot::where('timeslot_id', $request->timeslot_id)
-        ->where('is_assigned', false)
-        ->orderBy('queue_position')
-        ->first();
+    // Get the selected employeeTimeslot
+    $employeeSlot = EmployeeTimeslot::find($request->employee_timeslot_id);
 
-    if (!$employeeSlot) {
-        return back()->with('error', 'No employees available for this timeslot');
+    // Check if already taken
+    if ($employeeSlot->is_assigned) {
+        return back()->with('error', 'This slot is already booked');
     }
 
-    // Mark employee as assigned
+    // Mark as assigned
     $employeeSlot->update([
         'is_assigned' => true
     ]);
