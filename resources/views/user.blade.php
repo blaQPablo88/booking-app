@@ -4,16 +4,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>User Booking</title>
 </head>
-<body>
 
-    
-    <div class="container mt-3">
-        <h1>User Booking System</h1>
+<body class="bg-light">
+
+<div class="container py-5">
+
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">User Dashboard</h1>
+        <p class="text-muted">Schedule an appointment with our representatives</p>
         <a href="/">
             Go back home
         </a>
     </div>
-    <br>
+    <hr>
 
     <!-- MESSAGES -->
     @if(session('success'))

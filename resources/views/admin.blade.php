@@ -2,63 +2,113 @@
 <html>
 <head>
     <title>Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
 
-    <h1>Admin Dashboard</h1>
+<body class="bg-light">
 
-    <hr>
+<div class="container py-5">
 
-    <!-- CREATE TIMESLOT -->
-    <h2>Create Timeslot</h2>
-    <form method="POST" action="/admin/timeslot">
-        @csrf
-        <input type="time" name="start_time" required>
-        <input type="time" name="end_time" required>
-        <button type="submit">Add Timeslot</button>
-    </form>
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">Admin Dashboard</h1>
+        <p class="text-muted">Manage timeslots, employees, and assignments</p>
+        <a href="/">
+            Go back home
+        </a>
+    </div>
 
-    <hr>
+    <div class="row g-4">
 
-    <!-- ADD EMPLOYEE -->
-    <h2>Create Employee</h2>
-    <form method="POST" action="/admin/employee">
-        @csrf
-        <input type="text" name="full_name" placeholder="Full Name" required>
-        <input type="text" name="position" placeholder="Role (Technician)" required>
-        <button type="submit">Add Employee</button>
-    </form>
+        <!-- CREATE TIMESLOT -->
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 h-100">
+                <h5 class="mb-3">Create Timeslot</h5>
 
-    <hr>
+                <form method="POST" action="/admin/timeslot">
+                    @csrf
 
-    
-    <!-- ASSIGN EMPLOYEE A TIMESLOT -->
-    <h2>Assign Employee to Timeslot (Queue)</h2>
-    <form method="POST" action="/admin/assign">
-        @csrf
+                    <div class="mb-3">
+                        <label class="form-label">Start Time</label>
+                        <input type="time" name="start_time" class="form-control" required>
+                    </div>
 
-        <label>Timeslot:</label>
-        <select name="timeslot_id">
-            @foreach($timeslots as $slot)
-                <option value="{{ $slot->id }}">
-                    {{ $slot->start_time }} - {{ $slot->end_time }}
-                </option>
-            @endforeach
-        </select>
+                    <div class="mb-3">
+                        <label class="form-label">End Time</label>
+                        <input type="time" name="end_time" class="form-control" required>
+                    </div>
 
-        <label>Employee:</label>
-        <select name="employee_id">
-            @foreach($employees as $emp)
-                <option value="{{ $emp->id }}">
-                    {{ $emp->full_name }}
-                </option>
-            @endforeach
-        </select>
+                    <button class="btn btn-primary w-100">Add Timeslot</button>
+                </form>
+            </div>
+        </div>
 
-        <input type="number" name="queue_position" placeholder="Queue Position" required>
+        <!-- CREATE EMPLOYEE -->
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 h-100">
+                <h5 class="mb-3">Create Employee</h5>
 
-        <button type="submit">Assign</button>
-    </form>
+                <form method="POST" action="/admin/employee">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="full_name" class="form-control" placeholder="Pontsho Mogotsi" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Position</label>
+                        <input type="text" name="position" class="form-control" placeholder="Technician" required>
+                    </div>
+
+                    <button class="btn btn-success w-100">Add Employee</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ASSIGN EMPLOYEE -->
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 h-100">
+                <h5 class="mb-3">Assign Employee</h5>
+
+                <form method="POST" action="/admin/assign">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label class="form-label">Timeslot</label>
+                        <select name="timeslot_id" class="form-select">
+                            @foreach($timeslots as $slot)
+                                <option value="{{ $slot->id }}">
+                                    {{ $slot->start_time }} - {{ $slot->end_time }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Employee</label>
+                        <select name="employee_id" class="form-select">
+                            @foreach($employees as $emp)
+                                <option value="{{ $emp->id }}">
+                                    {{ $emp->full_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Queue Position</label>
+                        <input type="number" name="queue_position" class="form-control" placeholder="1" required>
+                    </div>
+
+                    <button class="btn btn-dark w-100">Assign</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>
