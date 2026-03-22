@@ -53,13 +53,19 @@ Follow these steps to run the project locally:
 git clone https://github.com/your-username/booking-system.git
 cd booking-system
 
+
+---
+
+## ⚙️ Setup Instructions
+
+Follow these steps to run the project locally:
+
 ---
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/booking-system.git
-cd booking-system
+git composer install
 
 ---
 
