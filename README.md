@@ -60,7 +60,6 @@ cd booking-system
 ```bash
 composer install
 
-
 ---
 
 ### 3. Configure Environments
@@ -75,14 +74,12 @@ DB_DATABASE=your_database
 DB_USERNAME=your_username
 DB_PASSWORD=your_password
 
-
 ---
 
 ### 4. Run Migrations
 
 ```bash
 php artisan migrate
-
 
 ---
 
