@@ -52,6 +52,7 @@ Follow these steps to run the project locally:
 ```bash
 git clone https://github.com/your-username/booking-system.git
 cd booking-system
+```
 
 ---
 
@@ -59,20 +60,21 @@ cd booking-system
 
 ```bash
 composer install
+```
 
 ---
 
-### 3. Configure Environments
+### 3.1 Configure Environments
 
 ```bash
 cp .env.example .env
 php artisan key:generate
+```
 
-Update your .env file with your database details:
-```ini
-DB_DATABASE=your_database
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
+### 3.2 Confirm the change in .env
+```.env
+SESSION_DRIVER=file
+```
 
 ---
 
@@ -80,6 +82,7 @@ DB_PASSWORD=your_password
 
 ```bash
 php artisan migrate
+```
 
 ---
 
@@ -87,5 +90,5 @@ php artisan migrate
 
 ```bash
 php artisan serve
-
+```
 

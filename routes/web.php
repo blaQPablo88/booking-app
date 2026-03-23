@@ -15,20 +15,31 @@ use App\Models\Booking;
 //                      GET methods
 // ──────────────────────────────────────────────────────────────
 
-// home-page
+// HOME-CONTROLLER
 Route::get('/', function () {
     return view('home');
 });
     
-// admin-page
+// ADMIN-PAGE-CONTROLLER
 Route::get('/admin', function () {
-    return view('admin', [
-        'timeslots' => Timeslot::all(),
-        'employees' => Employee::all()
-    ]);
+    // return view('admin', [
+    //     'timeslots' => Timeslot::all(),
+    //     'employees' => Employee::all(
+    // ]);
+        
+    $timeslots = Timeslot::all();
+    $employees = Employee::all();
+
+    $bookings = Booking::with([
+        'employeeTimeslot.employee',
+        'employeeTimeslot.timeslot'
+    ])->get();
+
+    return view('admin', compact('timeslots', 'employees', 'bookings'));
+
 });
 
-// user-page
+// USER-PAGE-CONTROLLER
 Route::get('/user', function () {
 
     $bookings = Booking::with([
@@ -87,7 +98,7 @@ Route::post('/admin/timeslot', function (Request $request) {
         'end_time' => $request->end_time,
     ]);
 
-    return back(); // reloads the page
+    return back();
 });
 
 
