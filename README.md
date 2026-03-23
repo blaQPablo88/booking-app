@@ -9,7 +9,7 @@ The system also includes an admin dashboard to manage timeslots, employees, and 
 ### Tech Stack
 - Backend: Laravel (PHP)
 - Frontend: Blade + Bootstrap
-- Database: MySQL
+- Database: SQLite3
 - Server: Laravel Artisan
 
 ---
