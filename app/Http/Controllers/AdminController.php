@@ -33,9 +33,10 @@ class AdminController extends Controller
     public function storeTimeslot(Request $request)
     {
         $request->validate([
-            'date' => 'required|date',
-            'start_time' => 'required',
-            'end_time' => 'required|after:start_time',
+            'start_time' => 'required|date_format:H:i|before:end_time',
+            'end_time'   => 'required|date_format:H:i|after:start_time',
+            'date'       => 'required|date|after_or_equal:today',
+            
         ]);
 
         Timeslot::create([

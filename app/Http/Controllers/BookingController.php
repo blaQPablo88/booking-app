@@ -43,8 +43,7 @@ class BookingController extends Controller
         ]);
 
         try {
-            DB::transaction(function () use ($request) {
-
+            $assignedMechanic = DB::transaction(function () use ($request) {
                 $slot = EmployeeTimeslot::where('timeslot_id', $request->timeslot_id)
                     ->where('is_assigned', false)
                     ->orderBy('queue_position')
@@ -55,17 +54,20 @@ class BookingController extends Controller
                     throw new \Exception('Timeslot fully booked');
                 }
 
-                $slot->update([
-                    'is_assigned' => true
-                ]);
+                $slot->update(['is_assigned' => true]);
 
                 Booking::create([
                     'user_email' => $request->email,
                     'employee_timeslot_id' => $slot->id
                 ]);
+
+                return $slot->employee->full_name;   // return name for flash
             });
 
-            return back()->with('success', 'Booking successful!');
+            return back()->with([
+                'success' => 'Booking confirmed!',
+                'mechanic' => $assignedMechanic
+            ]);
 
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
