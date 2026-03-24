@@ -36,6 +36,10 @@ class Timeslot extends Model
         'start_time',
         'end_time',
     ];
+    
+    protected $casts = [
+        'date' => 'date',
+    ];
 
     // Relationship: one timeslot has many queue entries
     public function employeeTimeslots() {
@@ -46,7 +50,4 @@ class Timeslot extends Model
             ->where('is_assigned', false)
             ->count() === 0;
     }
-
-
-
 }

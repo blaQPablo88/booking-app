@@ -96,6 +96,7 @@ Route::post('/admin/timeslot', function (Request $request) {
     
     // Create timeslot
     Timeslot::create([
+        'date' => $request->date,
         'start_time' => $request->start_time,
         'end_time' => $request->end_time,
     ]);

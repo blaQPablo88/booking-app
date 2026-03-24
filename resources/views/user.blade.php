@@ -59,9 +59,7 @@
                                 </td>
 
                                 <td>
-                                    {{ $booking->employeeTimeslot->timeslot->start_time }}
-                                    -
-                                    {{ $booking->employeeTimeslot->timeslot->end_time }}
+                                    {{ $booking->employeeTimeslot->timeslot->date->format('d M Y') }}
                                 </td>
 
                                 <td>
@@ -121,6 +119,7 @@
                     <div class="card shadow-sm p-3">
 
                         <h5 class="card-title">
+                            {{ $timeslot->date->format('d M Y') }} | 
                             {{ $timeslot->start_time }} - {{ $timeslot->end_time }}
                         </h5>
 
