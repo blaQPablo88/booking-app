@@ -33,6 +33,7 @@ class Timeslot extends Model
 
     // Allows mass assignment when creating timeslots
     protected $fillable = [
+        'date',
         'start_time',
         'end_time',
     ];

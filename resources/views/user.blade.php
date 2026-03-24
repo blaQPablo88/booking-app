@@ -27,82 +27,16 @@
     @if(session('error'))
         <p style="color: red;">{{ session('error') }}</p>
     @endif
-
-    <!-- BOOKED SCHEDULES -->
-    <div class="container mt-4">
-
-        <h2 class="mb-3">Your Bookings</h2>
-
-        @if($bookings->isEmpty())
-            <div class="alert alert-info">
-                No bookings yet.
-            </div>
-        @else
-
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered align-middle">
-
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Email</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach($bookings as $booking)
-                            <tr>
-                                <td>
-                                    {{ $booking->user_email }}
-                                </td>
-
-                                <td>
-                                    {{ $booking->employeeTimeslot->timeslot->date->format('d M Y') }}
-                                </td>
-
-                                <td>
-                                    {{ $booking->employeeTimeslot->timeslot->start_time }}
-                                    -
-                                    {{ $booking->employeeTimeslot->timeslot->end_time }}
-                                </td>
-
-                                <td>
-                                    <form method="POST" action="/user/booking/{{ $booking->id }}/delete">
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button class="btn btn-danger btn-sm">
-                                            Cancel
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endif
-    </div>
-    <hr>
-
+    
+    @if(session('mechanic'))
+        <div class="alert alert-success mt-3">
+            Your booking was assigned to <strong>{{ session('mechanic') }}</strong>
+        </div>
+    @endif
 
     <!-- AVAILABLE SLOTS -->
     <div class="container mt-5">
         <h2 class="mb-4">Book a Timeslot</h2>
-
-        <!-- POSITION SELECTOR -->
-        <div class="mb-4">
-            <label class="form-label">Select Service Type</label>
-            <select id="positionFilter" class="form-select">
-                <option value="">All</option>
-                @foreach($positions as $position)
-                    <option value="{{ $position }}">{{ $position }}</option>
-                @endforeach
-            </select>
-
-        </div>
 
         <!-- TIMESLOTS -->
         <div class="row">
@@ -147,23 +81,6 @@
             @endforeach
         </div>
     </div>
-
-    <script>
-        document.getElementById('positionFilter').addEventListener('change', function () {
-            let selectedPosition = this.value;
-
-            document.querySelectorAll('.timeslot-card').forEach(card => {
-                let position = card.getAttribute('data-position');
-
-                if (!selectedPosition || position.includes(selectedPosition)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-    </script>
-
 
 </body>
 </html>

@@ -38,7 +38,13 @@
                             <input type="time" name="end_time" class="form-control" required>
                         </div>
 
-                        <input type="date" name="date" class="form-control mb-3">
+                        <input 
+                            type="date" 
+                            name="date" 
+                            class="form-control mb-3" 
+                            min="{{ date('Y-m-d') }}"
+                            value="{{ date('Y-m-d') }}"
+                            required>
 
                         <button class="btn btn-primary w-100">Add Timeslot</button>
                     </form>
@@ -55,12 +61,12 @@
 
                         <div class="mb-3">
                             <label class="form-label">Full Name</label>
-                            <input type="text" name="full_name" class="form-control" placeholder="Kagiso Mogotsi" required>
+                            <input type="text" name="full_name" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Position</label>
-                            <input type="text" name="position" class="form-control" placeholder="Developer" required>
+                            <input type="text" name="position" class="form-control" required>
                         </div>
 
                         <button class="btn btn-success w-100">Add Employee</button>
@@ -73,7 +79,7 @@
                 <div class="card shadow-sm p-4 h-100">
                     <h5 class="mb-3">Assign Employee</h5>
 
-                    <form method="POST" action="/admin/assign">
+                    <form method="POST" action="/admin/employee-timeslot">
                         @csrf
 
                         <div class="mb-3">
@@ -81,7 +87,7 @@
                             <select name="timeslot_id" class="form-select">
                                 @foreach($timeslots as $slot)
                                     <option value="{{ $slot->id }}">
-                                        {{ $slot->start_time }} - {{ $slot->end_time }}
+                                        {{ $slot->date->format('d M Y') }} | {{ $slot->start_time }} - {{ $slot->end_time }}
                                     </option>
                                 @endforeach
                             </select>
