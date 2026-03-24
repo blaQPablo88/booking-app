@@ -27,7 +27,6 @@
     @if(session('error'))
         <p style="color: red;">{{ session('error') }}</p>
     @endif
-    <hr>
 
     <!-- BOOKED SCHEDULES -->
     <div class="container mt-4">
@@ -46,9 +45,8 @@
                     <thead class="table-dark">
                         <tr>
                             <th>Email</th>
+                            <th>Date</th>
                             <th>Time</th>
-                            <th>Employee</th>
-                            <th>Seeking a:</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -61,20 +59,15 @@
                                 </td>
 
                                 <td>
+                                    {{ $booking->employeeTimeslot->timeslot->date->format('d M Y') }}
+                                </td>
+
+                                <td>
                                     {{ $booking->employeeTimeslot->timeslot->start_time }}
                                     -
                                     {{ $booking->employeeTimeslot->timeslot->end_time }}
                                 </td>
 
-                                <td>
-                                    {{ $booking->employeeTimeslot->employee->full_name }}
-                                </td>
-
-                                <td>
-                                    <span class="badge bg-secondary">
-                                        {{ $booking->employeeTimeslot->employee->position }}
-                                    </span>
-                                </td>
                                 <td>
                                     <form method="POST" action="/user/booking/{{ $booking->id }}/delete">
                                         @csrf
@@ -114,47 +107,44 @@
         <!-- TIMESLOTS -->
         <div class="row">
 
-            @foreach($employeeTimeslots as $ets)
-                <div class="col-md-4 mb-3 timeslot-card" 
-                    data-position="{{ $ets->employee->position }}">
+            @foreach($timeslots as $timeslot)
+                @php
+                    $available = $timeslot->employeeTimeslots
+                        ->where('is_assigned', false)
+                        ->count();
+                @endphp
+
+                <div class="col-md-4 mb-3">
 
                     <div class="card shadow-sm p-3">
 
                         <h5 class="card-title">
-                            {{ $ets->timeslot->start_time }} - {{ $ets->timeslot->end_time }}
+                            {{ $timeslot->date->format('d M Y') }} | 
+                            {{ $timeslot->start_time }} - {{ $timeslot->end_time }}
                         </h5>
 
-                        <p class="text-muted mb-2">
-                            {{ $ets->employee->full_name }} ({{ $ets->employee->position }})
-                        </p>
-
-                        <form method="POST" action="/user/book">
+                        <form method="POST" action="/book">
                             @csrf
+
+                            <input type="hidden" name="timeslot_id" value="{{ $timeslot->id }}">
 
                             <input 
                                 type="email" 
-                                name="user_email" 
+                                name="email" 
                                 class="form-control mb-2"
                                 placeholder="Enter your email" 
                                 required
                             >
 
-                            <input type="hidden" name="employee_timeslot_id" value="{{ $ets->id }}">
-
-                            <button 
-                                class="btn w-100 {{ $ets->is_assigned ? 'btn-secondary' : 'btn-primary' }}"
-                                {{ $ets->is_assigned ? 'disabled' : '' }}
-                            >
-                                {{ $ets->is_assigned ? 'Booked' : 'Book' }}
-                            </button>
-
+                            @if(!$timeslot->isFull())
+                                <button class="btn btn-primary w-100">Book</button>
+                            @else
+                                <button class="btn btn-secondary w-100" disabled>Fully Booked</button>
+                            @endif
                         </form>
-
                     </div>
-
                 </div>
             @endforeach
-
         </div>
     </div>
 

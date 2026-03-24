@@ -38,6 +38,8 @@
                             <input type="time" name="end_time" class="form-control" required>
                         </div>
 
+                        <input type="date" name="date" class="form-control mb-3">
+
                         <button class="btn btn-primary w-100">Add Timeslot</button>
                     </form>
                 </div>
