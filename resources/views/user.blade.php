@@ -45,9 +45,8 @@
                     <thead class="table-dark">
                         <tr>
                             <th>Email</th>
+                            <th>Date</th>
                             <th>Time</th>
-                            <th>Employee</th>
-                            <th>Seeking a:</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -66,14 +65,11 @@
                                 </td>
 
                                 <td>
-                                    {{ $booking->employeeTimeslot->employee->full_name }}
+                                    {{ $booking->employeeTimeslot->timeslot->start_time }}
+                                    -
+                                    {{ $booking->employeeTimeslot->timeslot->end_time }}
                                 </td>
 
-                                <td>
-                                    <span class="badge bg-secondary">
-                                        {{ $booking->employeeTimeslot->employee->position }}
-                                    </span>
-                                </td>
                                 <td>
                                     <form method="POST" action="/user/booking/{{ $booking->id }}/delete">
                                         @csrf
@@ -141,14 +137,10 @@
                                 required
                             >
 
-                            @if($available > 0)
-                                <button class="btn btn-primary w-100">
-                                    Book
-                                </button>
+                            @if(!$timeslot->isFull())
+                                <button class="btn btn-primary w-100">Book</button>
                             @else
-                                <button class="btn btn-secondary w-100" disabled>
-                                    Fully Booked
-                                </button>
+                                <button class="btn btn-secondary w-100" disabled>Fully Booked</button>
                             @endif
                         </form>
                     </div>

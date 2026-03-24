@@ -41,6 +41,12 @@ class Timeslot extends Model
     public function employeeTimeslots() {
         return $this->hasMany(EmployeeTimeslot::class);
     }
+    public function isFull() {
+        return $this->employeeTimeslots()
+            ->where('is_assigned', false)
+            ->count() === 0;
+    }
+
 
 
 }
