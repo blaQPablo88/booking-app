@@ -8,7 +8,7 @@ use App\Models\Timeslot;
 use App\Models\Employee;
 use App\Models\EmployeeTimeslot;
 use App\Models\Booking;
-
+use App\Http\Controllers\BookingController;
 
 
 // ──────────────────────────────────────────────────────────────
@@ -47,10 +47,12 @@ Route::get('/user', function () {
         'employeeTimeslot.timeslot'
     ])->get();
 
-    $employeeTimeslots = EmployeeTimeslot::with([
-        'employee',
-        'timeslot'
-    ])->get();
+    // $employeeTimeslots = EmployeeTimeslot::with([
+    //     'employee',
+    //     'timeslot'
+    // ])->get();
+    $timeslots = Timeslot::with('employeeTimeslots.employee')->get();
+
 
     $positions = Employee::select('position')
         ->distinct()
@@ -58,7 +60,7 @@ Route::get('/user', function () {
 
     return view('user', [
         'bookings' => $bookings,
-        'employeeTimeslots' => $employeeTimeslots,
+        'timeslots' => $timeslots,
         'positions' => $positions
     ]);
 });
@@ -140,32 +142,5 @@ Route::post('/admin/assign', function (Request $request) {
 //                      Booking Routes
 // ──────────────────────────────────────────────────────────────
 
-Route::post('/user/book', function (Request $request) {
-
-    // Validate input
-    $request->validate([
-        'user_email' => 'required|email',
-        'employee_timeslot_id' => 'required|exists:employee_timeslots,id'
-    ]);
-
-    // Get the selected employeeTimeslot
-    $employeeSlot = EmployeeTimeslot::find($request->employee_timeslot_id);
-
-    // Check if already taken
-    if ($employeeSlot->is_assigned) {
-        return back()->with('error', 'This slot is already booked');
-    }
-
-    // Mark as assigned
-    $employeeSlot->update([
-        'is_assigned' => true
-    ]);
-
-    // Create booking
-    Booking::create([
-        'user_email' => $request->user_email,
-        'employee_timeslot_id' => $employeeSlot->id
-    ]);
-
-    return back()->with('success', 'Booking confirmed!');
-});
+// Using a controller for better separation of concerns
+Route::post('/book', [BookingController::class, 'store']);
